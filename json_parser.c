@@ -45,7 +45,6 @@ int _parse_symbol(FILE *fptr, char *target, char *first_meet)
 	ret = -1;
 	while ((c = getc(fptr)) != EOF) {
 		for (i = 0; i < strlen(target); i++) {
-			//printf("target = %c\n", target[i]);
 			if (c == target[i]) {
 				if (first_meet)
 					*first_meet = c;
@@ -265,8 +264,6 @@ int parse_json_file(FILE *fptr, JSON_T *json_obj)
 		if (ret < 0)
 			return ret;
 
-		printf("string = %s : ", key);
-
 		_PARSE_SYMBOL(fptr, ":", NULL);
 		_PARSE_SYMBOL(fptr, "\"{[-0123456789", &first_meet);
 		value = malloc(sizeof(JSON_T));
@@ -279,7 +276,6 @@ int parse_json_file(FILE *fptr, JSON_T *json_obj)
 			if (ret < 0)
 				return ret;
 			value->str = tmpstr;
-			printf("value = %s\n", tmpstr);
 			break;
 		case '{':
 			fseek(fptr, -1, SEEK_CUR);
@@ -293,7 +289,6 @@ int parse_json_file(FILE *fptr, JSON_T *json_obj)
 			if (ret < 0)
 				return ret;
 			value->integer = -tmpnum;
-			printf("value = %lld\n", -tmpnum);
 			break;
 		default:
 			fseek(fptr, -1, SEEK_CUR);
@@ -302,7 +297,6 @@ int parse_json_file(FILE *fptr, JSON_T *json_obj)
 			if (ret < 0)
 				return ret;
 			value->integer = tmpnum;
-			printf("value = %lld\n", tmpnum);
 			break;	
 		}
 
