@@ -198,7 +198,6 @@ int get_json_val(JSON_T *json_obj, char *key, JSON_T **value)
 
 	now = json_obj->keys->head;
 	while (now) {
-		printf("now key is %s\n", now->mapping.key);
 		if (!strcmp(now->mapping.key, key)) {
 			*value = now->mapping.value;
 			break;
