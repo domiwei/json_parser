@@ -27,15 +27,9 @@ typedef struct JSON_T {
 	union {
 		char *str;
 		long long integer;
-		struct LIST *list;
 		struct KEY_STRUCT *keys;
 	};
 } JSON_T;
-
-typedef struct {
-	struct JSON_T *data;
-	struct LIST *next;
-} LIST;
 
 int _parse_symbol(FILE *fptr, char *target, char *first_meet)
 {
@@ -265,7 +259,7 @@ int parse_json_file(FILE *fptr, JSON_T *json_obj)
 			return ret;
 
 		_PARSE_SYMBOL(fptr, ":", NULL);
-		_PARSE_SYMBOL(fptr, "\"{[-0123456789", &first_meet);
+		_PARSE_SYMBOL(fptr, "\"{-0123456789", &first_meet);
 		value = malloc(sizeof(JSON_T));
 		memset(value, 0, sizeof(JSON_T));
 
