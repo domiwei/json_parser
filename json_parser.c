@@ -406,6 +406,8 @@ int parse_json_file(FILE *fptr, JSON_T *json_obj)
 	return 0;
 
 error_handle:
+	/* Do not free self because it perhaps results in
+	double free error when recursing */
 	free_json_obj_field(json_obj);
 	if (key)
 		free(key);
