@@ -1,41 +1,18 @@
-#include "stdio.h"
-#include "stdlib.h"
-#include "errno.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include "json_parser.h"
 
-enum {	
-	STRING, INTEGER, JSON
-};
+#define ALLOC_UNIT 256
 
-typedef struct JSON_MAPPING {
-	char *key;
-	struct JSON_T *value;
-} JSON_MAPPING;
-
-typedef struct KEY_LIST_NODE {
-	JSON_MAPPING mapping;
-	struct KEY_LIST_NODE *next;
-} KEY_LIST_NODE;
-
-typedef struct KEY_STRUCT {
-	int num_keys;
-	struct KEY_LIST_NODE *head;
-	struct KEY_LIST_NODE *tail;
-} KEY_STRUCT;
-
-typedef struct JSON_T {
-	char type; /* STRING, INTEGER, JSON */
-	union {
-		char *str;
-		long long integer;
-		struct LIST *list;
-		struct KEY_STRUCT *keys;
-	};
-} JSON_T;
-
-typedef struct {
-	struct JSON_T *data;
-	struct LIST *next;
-} LIST;
+#define _PARSE_SYMBOL(fptr, str_ptr, first_meet_ptr) \
+	{\
+		ret = _parse_symbol(fptr, str_ptr, first_meet_ptr); \
+		if (ret < 0) {\
+			printf("Error in file pos %ld, code line %d\n", ftell(fptr), __LINE__); \
+				goto error_handle;\
+		}\
+	}
 
 int _parse_symbol(FILE *fptr, char *target, char *first_meet)
 {
@@ -66,8 +43,6 @@ int _parse_symbol(FILE *fptr, char *target, char *first_meet)
 
 	return ret;
 }
-
-#define ALLOC_UNIT 256
 
 int _parse_string(FILE *fptr, char **string)
 {
@@ -165,15 +140,6 @@ void _print_json(JSON_T *json_obj, long long layer)
 		fputs("}", stdout);
 	}
 }
-
-#define _PARSE_SYMBOL(fptr, str_ptr, first_meet_ptr) \
-	{\
-		ret = _parse_symbol(fptr, str_ptr, first_meet_ptr); \
-		if (ret < 0) {\
-			printf("Error in file pos %ld, code line %d\n", ftell(fptr), __LINE__); \
-				goto error_handle;\
-		}\
-	}
 
 void print_json(JSON_T *json_obj)
 {
@@ -439,13 +405,13 @@ int main()
 
 	JSON_T *json_value;
 	json_value = NULL;
-	ret = get_json_val(json_obj, "here", &json_value);
+	ret = get_json_val(json_obj, "heykewei", &json_value);
 	if (ret < 0)
 		printf("not found\n");
 	else
 		printf("value is %d\n", json_value->integer);
 	//print_json(json_obj);
-	free_json_obj_field(json_obj);
-	free(json_obj);
+	free_json_obj(json_obj);
+	//free(json_obj);
 	return 0;
 }
