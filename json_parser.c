@@ -14,7 +14,7 @@
 		}\
 	}
 
-int _parse_symbol(FILE *fptr, char *target, char *first_meet)
+static int _parse_symbol(FILE *fptr, char *target, char *first_meet)
 {
 	char c;
 	int ret, i;
@@ -44,7 +44,7 @@ int _parse_symbol(FILE *fptr, char *target, char *first_meet)
 	return ret;
 }
 
-int _parse_string(FILE *fptr, char **string)
+static int _parse_string(FILE *fptr, char **string)
 {
 	char c;
 	int ret;
@@ -81,7 +81,7 @@ int _parse_string(FILE *fptr, char **string)
 	return ret;
 }
 
-int _parse_integer(FILE *fptr, long long *num)
+static int _parse_integer(FILE *fptr, long long *num)
 {
 	char c;
 
@@ -105,7 +105,7 @@ int _parse_integer(FILE *fptr, long long *num)
 	return 0;
 }
 
-int _parse_decimal(FILE *fptr, double *decimal)
+static int _parse_decimal(FILE *fptr, double *decimal)
 {
 	char c;
 	double devide_base;
@@ -130,7 +130,7 @@ int _parse_decimal(FILE *fptr, double *decimal)
 	return 0;
 }
 
-void _print_indent(long long layer)
+static inline void _print_indent(long long layer)
 {
 	int i;
 
@@ -138,7 +138,7 @@ void _print_indent(long long layer)
 		fputs("\t", stdout);
 }
 
-void _print_json(JSON_T *json_obj, long long layer)
+static void _print_json(JSON_T *json_obj, long long layer)
 {
 	KEY_LIST_NODE *now;
 
@@ -341,7 +341,7 @@ int parse_json_file(FILE *fptr, JSON_T *json_obj)
 		//printf("string = %s : ", key);
 
 		_PARSE_SYMBOL(fptr, ":", NULL);
-		_PARSE_SYMBOL(fptr, "\"{[-0123456789", &first_meet);
+		_PARSE_SYMBOL(fptr, "\"{-0123456789.", &first_meet);
 		value = malloc(sizeof(JSON_T));
 		if (!value) {
 			ret = -ENOMEM;
