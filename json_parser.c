@@ -93,12 +93,39 @@ int _parse_integer(FILE *fptr, long long *num)
 			if (c == ',' || c == ' ' || c == '\n' || c == '\r' || c == '\t')
 				break;
 			else {
+				if (c == '.')
+					return 1;
 				printf("Error in file pos %ld. Encounter %c\n", ftell(fptr), c);
 				return -EINVAL;
 			}
 		}
 	}
 
+	fseek(fptr, -1, SEEK_CUR);
+	return 0;
+}
+
+int _parse_decimal(FILE *fptr, double *decimal)
+{
+	char c;
+	double devide_base;
+
+	devide_base = 1.0;
+	*decimal = 0.0;
+	while ((c = getc(fptr)) != EOF ) {
+		if (0 <= c - '0' && c - '0' <= 9 ) {
+			*decimal = *decimal * 10 + (c - '0');
+			devide_base *= 10;
+		} else {
+			if (c == ',' || c == ' ' || c == '\n' || c == '\r' || c == '\t')
+				break;
+			else {
+				printf("Error in file pos %ld. Encounter %c\n", ftell(fptr), c);
+				return -EINVAL;
+			}
+		}
+	}
+	*decimal /= devide_base;
 	fseek(fptr, -1, SEEK_CUR);
 	return 0;
 }
@@ -288,6 +315,7 @@ int parse_json_file(FILE *fptr, JSON_T *json_obj)
 	char first_meet;
 	char *tmpstr;
 	long long tmpnum;
+	double floatnum, decimal;
 	JSON_T *value;
 
 	if (!json_obj)
@@ -338,19 +366,37 @@ int parse_json_file(FILE *fptr, JSON_T *json_obj)
 			break;
 		case '-':
 			ret = _parse_integer(fptr, &tmpnum);
-			if (ret < 0)
+			if (ret < 0) {
 				goto error_handle;
-			value->type = INTEGER;
-			value->integer = -tmpnum;
+			} else if (ret == 1) {
+				ret = _parse_decimal(fptr, &decimal);
+				if (ret < 0)
+					goto error_handle;
+				floatnum = tmpnum + decimal;
+				value->type = FLOAT;
+				value->floating = -floatnum;
+			} else {
+				value->type = INTEGER;
+				value->integer = -tmpnum;
+			}
 			//printf("value = %lld\n", -tmpnum);
 			break;
 		default:
 			fseek(fptr, -1, SEEK_CUR);
 			ret = _parse_integer(fptr, &tmpnum);
-			if (ret < 0)
+			if (ret < 0) {
 				goto error_handle;
-			value->type = INTEGER;
-			value->integer = tmpnum;
+			} else if (ret == 1) {
+				ret = _parse_decimal(fptr, &decimal);
+				if (ret < 0)
+					goto error_handle;
+				floatnum = tmpnum + decimal;
+				value->type = FLOAT;
+				value->floating = floatnum;
+			} else {
+				value->type = INTEGER;
+				value->integer = tmpnum;
+			}
 			//printf("value = %lld\n", tmpnum);
 			break;	
 		}
@@ -382,36 +428,4 @@ error_handle:
 	if (value)
 		free(value);
 	return ret;
-}
-
-/* Testing */
-int main()
-{
-	FILE *fptr;
-	int ret;
-	JSON_T *json_obj;
-
-	json_obj = malloc(sizeof(JSON_T));
-	memset(json_obj, 0, sizeof(JSON_T));
-	
-	fptr = fopen("test_file", "r");
-	ret = parse_json_file(fptr, json_obj);
-	printf("ret = %d\n", ret);
-	fclose(fptr);
-	if (ret < 0)
-		return 0;
-
-	printf("num_keys = %d\n", json_obj->keys->num_keys);
-
-	JSON_T *json_value;
-	json_value = NULL;
-	ret = get_json_val(json_obj, "heykewei", &json_value);
-	if (ret < 0)
-		printf("not found\n");
-	else
-		printf("value is %d\n", json_value->integer);
-	//print_json(json_obj);
-	free_json_obj(json_obj);
-	//free(json_obj);
-	return 0;
 }

@@ -1,5 +1,5 @@
 enum {	
-	STRING, INTEGER, JSON
+	STRING, INTEGER, JSON, FLOAT
 };
 
 typedef struct JSON_MAPPING {
@@ -19,10 +19,11 @@ typedef struct KEY_STRUCT {
 } KEY_STRUCT;
 
 typedef struct JSON_T {
-	char type; /* STRING, INTEGER, JSON */
+	char type; /* STRING, INTEGER, JSON, FLOAT */
 	union {
 		char *str;
 		long long integer;
+		double floating;
 		struct LIST *list;
 		struct KEY_STRUCT *keys;
 	};
