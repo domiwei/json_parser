@@ -1,0 +1,17 @@
+METAPATH = /home/kewei/hcfs_meta/metastorage
+BLOCKPATH = /home/kewei/hcfs_meta/blockstorage
+CACHE_SOFT_LIMIT = 5048576
+CACHE_HARD_LIMIT = 15485760
+CACHE_DELTA = 2048576
+MAX_BLOCK_SIZE = 1048576
+
+CURRENT_BACKEND = SWIFT
+SWIFT_ACCOUNT = test
+SWIFT_USER = tester
+SWIFT_PASS = testing
+SWIFT_URL = 172.16.11.113:8080
+SWIFT_CONTAINER = my_test_container
+SWIFT_PROTOCOL = http
+
+LOG_LEVEL = 10
+

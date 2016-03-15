@@ -1,0 +1,17 @@
+METAPATH = /home/kewei/hcfs_meta/metastorage
+BLOCKPATH = /home/kewei/hcfs_meta/blockstorage
+CACHE_SOFT_LIMIT = 5485760
+CACHE_HARD_LIMIT = 15485760
+CACHE_DELTA = 2048576
+MAX_BLOCK_SIZE = 1048576
+
+CURRENT_BACKEND = SWIFT
+SWIFT_ACCOUNT = lalawei
+SWIFT_USER = lalawei
+SWIFT_PASS = 8YVmnUhv9SEq
+SWIFT_URL = 10.10.99.117:8080
+SWIFT_CONTAINER = lalawei_private_container
+SWIFT_PROTOCOL = https
+
+LOG_LEVEL = 10
+
