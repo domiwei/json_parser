@@ -1,7 +1,13 @@
-all: json_parser
+CC = gcc
+CFLAGS = -Wall
 
-json_parser: json_parser.c json_parser.h
-	gcc json_parser.c -o json_parser -Wall
+all: main
+
+main: json_parser.o
+	$(CC) $(CFLAGS) json_parser.o main.c -o main
+
+json_parser.o: json_parser.c json_parser.h
+	$(CC) $(CFLAGS) json_parser.c -c -o json_parser.o
 
 clean:
-	rm json_parser
+	rm -f *.o main
